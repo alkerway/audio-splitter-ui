@@ -12,16 +12,7 @@ export interface DownloadProps {
 }
 export class Download extends React.Component<DownloadProps, DownloadState> {
     onDownloadClick = () => {
-        const body = {
-            name: this.props.name
-        }
-        fetch(`${this.props.endpoint}/getfiles`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
+        window.open(`${this.props.endpoint}/getfiles?name=${this.props.name}`);
     }
     render() {
         return (this.props.status === Statuses.ERRORRED || this.props.status === Statuses.COMPLETE) ? (
