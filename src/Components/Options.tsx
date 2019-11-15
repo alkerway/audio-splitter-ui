@@ -18,19 +18,36 @@ export class Options extends React.Component<OptionsProps, SpleeterOptions> {
         super(props);
         this.state = {
             stems: 2,
-            isolate: [],
-            remove: []
+            isolate: new Set([]),
+            remove: new Set([])
         }
     }
 
     onStemChange = (arg: any) => {
         const {value} = arg
+        const newStems = Number(value) as Stem
+        const newOptions = newStems === 2 ? Stem2Options : newStems  === 4? Stem4Options : Stem5Options
         this.setState({
             ...this.state,
-            stems: Number(value) as Stem
+            stems: newStems
         })
+        if (this.state.isolate.size) {
+            this.state.isolate.forEach((option) => {
+              if (newOptions.indexOf(option as any) === -1) {
+                  this.state.isolate.delete(option)
+              }
+            })
+        }
+        if (this.state.remove.size) {
+            this.state.remove.forEach((option) => {
+                if (newOptions.indexOf(option as any) === -1 || newStems === 2) {
+                    this.state.remove.delete(option)
+                }
+            })
+        }
+
     }
-    get stemsArray(): string[] {
+    get stemOptionsSet(): string[] {
         if (this.state.stems === 2) {
             return Stem2Options
         } else if (this.state.stems === 4) {
@@ -40,11 +57,35 @@ export class Options extends React.Component<OptionsProps, SpleeterOptions> {
         }
     }
 
-    getOption = (option: string, rowClass: string) => {
+    onChecked = (option: any, optionType: 'isolate' | 'remove') => {
+        console.log(`checked ${option} ${optionType}`)
+        if (optionType === 'isolate') {
+            const currentIsolate = this.state.isolate
+            currentIsolate.has(option) ?
+                currentIsolate.delete(option) :
+                currentIsolate.add(option)
+            this.setState({
+                ...this.state,
+                isolate: currentIsolate
+            })
+        } else {
+            const currentRemove = this.state.remove
+            currentRemove.has(option) ?
+                currentRemove.delete(option) :
+                currentRemove.add(option)
+            this.setState({
+                ...this.state,
+                remove: currentRemove
+            })
+        }
+    }
+
+    getOption = (option: string, optionType: 'isolate' | 'remove') => {
         return (
-            <div key={`${rowClass}${option}`} className={`${rowClass} optionRow`}>
-                <input type="checkbox" name={`${rowClass}${option}`}/>
-                <label htmlFor={`${rowClass}${option}`}>{option}</label>
+            <div key={`${optionType}${option}`} className={`${optionType} optionRow`}>
+                <input type="checkbox" name={`${optionType}${option}`} checked={this.state[optionType].has(option as any)}
+                       onChange={e => this.onChecked(option, optionType)}/>
+                <label htmlFor={`${optionType}${option}`}>{option}</label>
             </div>
         )
     }
@@ -60,7 +101,7 @@ export class Options extends React.Component<OptionsProps, SpleeterOptions> {
                 <div className="halfColumn">
                     <p className='optionHeader'>Isolate:</p>
                     {
-                        this.stemsArray.map((option) => {
+                        this.stemOptionsSet.map((option) => {
                             return this.getOption(option, 'isolate')
                         })
                     }
@@ -70,8 +111,8 @@ export class Options extends React.Component<OptionsProps, SpleeterOptions> {
                         <div className="halfColumn">
                             <p className='optionHeader'>Remove:</p>
                             {
-                                this.stemsArray.map((option) => {
-                                    return this.getOption(option, 'isolate')
+                                this.stemOptionsSet.map((option) => {
+                                    return this.getOption(option, 'remove')
                                 })
                             }
                         </div>
