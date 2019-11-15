@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { Download } from "./Download";
 import { Statuses } from '../Models/Statuses'
 
 export interface UploadState {
     status: Statuses;
     file: null | File;
+    sessionname: string;
     statusInterval: NodeJS.Timer | null
 }
 
@@ -20,7 +22,8 @@ export class Upload extends React.Component<UploadProps, UploadState> {
         this.state ={
             file: null,
             status: Statuses.UNINITIALIZED,
-            statusInterval: null
+            statusInterval: null,
+            sessionname: ''
         }
     }
     onFileAdded = (fileList: FileList | null) => {
@@ -50,7 +53,8 @@ export class Upload extends React.Component<UploadProps, UploadState> {
             }).then((res) => {
                 this.setState({
                     ...this.state,
-                    status: Statuses.UPLOADED
+                    status: Statuses.UPLOADED,
+                    sessionname: res.name
                 })
                 this.startStatusCheck(res.name)
             }).catch((err) => {
@@ -116,6 +120,7 @@ export class Upload extends React.Component<UploadProps, UploadState> {
                 <div className="statusDisplay">
                     {this.state.status !== Statuses.UNINITIALIZED ? `Status: ${this.state.status}` : ''}
                 </div>
+                <Download name={this.state.sessionname} endpoint={endpoint} status={this.state.status} />
             </div>
         )
     }
