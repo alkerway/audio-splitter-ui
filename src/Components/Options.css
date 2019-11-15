@@ -1,0 +1,28 @@
+.Dropdown-control {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-sizing: border-box;
+    color: #333;
+    cursor: default;
+    outline: none;
+    padding: 0px 23px 0px 10px;
+    transition: all 200ms ease;
+    overflow: unset;
+}
+.dropdownContainer {
+    display: inline-block;
+}
+.splitSelect {
+    display: flex;
+    text-align: left;
+}
+.halfColumn {
+    flex: 50%
+}
+.optionRow {
+    font-size: 12px;
+}
+.optionHeader {
+    margin: 10px 0px 10px
+}

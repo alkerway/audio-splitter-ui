@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Download } from "./Download";
+import { Options }from './Options'
 import { Statuses } from '../Models/Statuses'
+import {SpleeterOptions} from "../Models/Stems";
 
 export interface UploadState {
     status: Statuses;
@@ -43,6 +45,7 @@ export class Upload extends React.Component<UploadProps, UploadState> {
             })
             const form = new FormData()
             form.append('file', this.state.file)
+
             fetch(`${endpoint}/upload`,{
                 method: 'POST',
                 body: form
@@ -102,10 +105,14 @@ export class Upload extends React.Component<UploadProps, UploadState> {
             statusInterval: null
         })
     }
+    onOptionsChange = (options: SpleeterOptions) => {
+        console.log(options)
+    }
     render() {
         return (
             <div className="uploadContainer">
                 <div className="fileDisplay">{this.state.file && this.state.file.name}</div>
+                <Options onOptionsChange={this.onOptionsChange}/>
                 <div className="fileInputWrapper">
                     <input
                         id="file-input"
