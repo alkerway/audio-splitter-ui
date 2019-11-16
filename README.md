@@ -1,5 +1,5 @@
 ## Audio Splitter UI
-The Audio Splitter UI is a user interface for the [audio splitter]() API. It is written with React and Typescript.
+The Audio Splitter UI is a user interface for the [audio splitter](https://github.com/alkerway/audio-splitter) API. It is written with React and Typescript.
 
 
 
