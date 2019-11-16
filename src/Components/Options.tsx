@@ -11,7 +11,7 @@ const Stem5Options: Stem5Option[] = ['vocals', 'drums', 'bass', 'piano', 'other'
 
 
 export interface OptionsProps {
-    onOptionsChange: (options: SpleeterOptions) => void;
+    sendState: (options: SpleeterOptions) => void;
 }
 export class Options extends React.Component<OptionsProps, SpleeterOptions> {
     constructor(props: OptionsProps) {
@@ -21,6 +21,11 @@ export class Options extends React.Component<OptionsProps, SpleeterOptions> {
             isolate: new Set([]),
             remove: new Set([])
         }
+        this.sendState()
+    }
+
+    sendState = () => {
+        this.props.sendState(this.state)
     }
 
     onStemChange = (arg: any) => {
@@ -45,6 +50,7 @@ export class Options extends React.Component<OptionsProps, SpleeterOptions> {
                 }
             })
         }
+        this.sendState()
 
     }
     get stemOptionsSet(): string[] {
@@ -78,6 +84,7 @@ export class Options extends React.Component<OptionsProps, SpleeterOptions> {
                 remove: currentRemove
             })
         }
+        this.sendState()
     }
 
     getOption = (option: string, optionType: 'isolate' | 'remove') => {

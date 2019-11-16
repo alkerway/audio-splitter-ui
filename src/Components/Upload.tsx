@@ -8,7 +8,8 @@ export interface UploadState {
     status: Statuses;
     file: null | File;
     sessionname: string;
-    statusInterval: NodeJS.Timer | null
+    statusInterval: NodeJS.Timer | null,
+    options: SpleeterOptions
 }
 
 export interface UploadProps {
@@ -25,7 +26,12 @@ export class Upload extends React.Component<UploadProps, UploadState> {
             file: null,
             status: Statuses.UNINITIALIZED,
             statusInterval: null,
-            sessionname: ''
+            sessionname: '',
+            options: {
+                stems: 2,
+                isolate: new Set(),
+                remove: new Set()
+            }
         }
     }
     onFileAdded = (fileList: FileList | null) => {
@@ -39,30 +45,34 @@ export class Upload extends React.Component<UploadProps, UploadState> {
     }
     startUpload = () => {
         if (this.state.file) {
-            this.setState({
-                ...this.state,
-                status: Statuses.UPLOADING
-            })
-            const form = new FormData()
-            form.append('file', this.state.file)
-
-            fetch(`${endpoint}/upload`,{
-                method: 'POST',
-                body: form
-            }).then((res) => {
-                if (res.ok) {
-                    return res.json()
-                }
-            }).then((res) => {
+            if (this.state.options.isolate.size || this.state.options.remove.size) {
                 this.setState({
                     ...this.state,
-                    status: Statuses.UPLOADED,
-                    sessionname: res.name
+                    status: Statuses.UPLOADING
                 })
-                this.startStatusCheck(res.name)
-            }).catch((err) => {
-                console.log(err)
-            })
+                const form = new FormData()
+                form.append('file', this.state.file)
+                form.append('stems', String(this.state.options.stems))
+                form.append('isolate', JSON.stringify(Array.from(this.state.options.isolate)))
+                form.append('remove', JSON.stringify(Array.from(this.state.options.remove)))
+                fetch(`${endpoint}/upload`, {
+                    method: 'POST',
+                    body: form
+                }).then((res) => {
+                    if (res.ok) {
+                        return res.json()
+                    }
+                }).then((res) => {
+                    this.setState({
+                        ...this.state,
+                        status: Statuses.UPLOADED,
+                        sessionname: res.name
+                    })
+                    this.startStatusCheck(res.name)
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }
         }
     }
     async getStatus (name: string): Promise<String> {
@@ -106,13 +116,16 @@ export class Upload extends React.Component<UploadProps, UploadState> {
         })
     }
     onOptionsChange = (options: SpleeterOptions) => {
-        console.log(options)
+        this.setState({
+            ...this.state,
+            options
+        })
     }
     render() {
         return (
             <div className="uploadContainer">
                 <div className="fileDisplay">{this.state.file && this.state.file.name}</div>
-                <Options onOptionsChange={this.onOptionsChange}/>
+                <Options sendState={this.onOptionsChange}/>
                 <div className="fileInputWrapper">
                     <input
                         id="file-input"
