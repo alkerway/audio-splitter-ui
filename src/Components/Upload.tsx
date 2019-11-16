@@ -19,7 +19,7 @@ const port = 8880
 const endpoint = `${window.location.protocol}//${window.location.hostname}:${port}`
 
 export class Upload extends React.Component<UploadProps, UploadState> {
-    private statusIntervalTime = 2000;
+    private statusIntervalTime = 500;
     constructor(props: UploadProps) {
         super(props)
         this.state ={
@@ -99,7 +99,7 @@ export class Upload extends React.Component<UploadProps, UploadState> {
                         ...this.state,
                         status
                     })
-                    if (status === Statuses.COMPLETE || status === Statuses.ERRORRED) {
+                    if (status === Statuses.COMPLETE || status === Statuses.ERRORED) {
                         this.stopStatusCheck()
                     }
                 }).catch(err => console.log)

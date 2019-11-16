@@ -15,7 +15,7 @@ export class Download extends React.Component<DownloadProps, DownloadState> {
         window.open(`${this.props.endpoint}/getfiles?name=${this.props.name}`);
     }
     render() {
-        return (this.props.status === Statuses.ERRORRED || this.props.status === Statuses.COMPLETE) ? (
+        return (this.props.status === Statuses.ERRORED || this.props.status === Statuses.COMPLETE) ? (
             <div>
                 {this.props.status === Statuses.COMPLETE ? 'Download file(s)' : 'Download error log'}
                 <button className="downloadButton" onClick={this.onDownloadClick}>Download</button>
