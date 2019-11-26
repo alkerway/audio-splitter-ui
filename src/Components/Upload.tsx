@@ -111,7 +111,7 @@ export class Upload extends React.Component<UploadProps, UploadState> {
             <div className="uploadContainer">
                 <Options sendState={this.onOptionsChange}/>
                 <FileInput onFileAdded={this.onFileAdded}/>
-                <button onClick={this.startUpload}>upload</button>
+                <button onClick={this.startUpload}>Start</button>
                 <div className="statusDisplay">
                     {this.state.status !== Statuses.UNINITIALIZED ? `Status: ${this.state.status}` : ''}
                 </div>
