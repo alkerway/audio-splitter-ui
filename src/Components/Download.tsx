@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { Statuses } from '../Models/Statuses'
+import HttpService from '../Services/http.service'
 
-export interface DownloadState {
-
-}
+export interface DownloadState {}
 
 export interface DownloadProps {
-    endpoint: string;
     name: string;
     status: Statuses
 }
 export class Download extends React.Component<DownloadProps, DownloadState> {
     onDownloadClick = () => {
-        window.open(`${this.props.endpoint}/getfiles?name=${this.props.name}`);
+        HttpService.open(`getfiles?name=${this.props.name}`);
     }
     render() {
         return (this.props.status === Statuses.ERRORED || this.props.status === Statuses.COMPLETE) ? (
