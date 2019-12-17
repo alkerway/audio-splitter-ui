@@ -12,17 +12,22 @@
 }
 .dropdownContainer {
     display: inline-block;
+    min-width: 325px;
 }
-.splitSelect {
-    display: flex;
-    text-align: left;
+.stemSelect {
+    font-size: 20px;
 }
-.halfColumn {
-    flex: 50%
+.tracksContainer {
+    padding: 15px 0;
 }
-.optionRow {
-    font-size: 12px;
+.addTrackButton {
+    display: inline-block;
+    float: right;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 6px;
+    border: none;
 }
-.optionHeader {
-    margin: 10px 0px 10px
+.addTrackButtonContainer {
+    overflow: hidden;
 }

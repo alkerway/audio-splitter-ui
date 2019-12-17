@@ -5,6 +5,7 @@ import { Options }from './Options'
 import { Statuses } from '../Models/Statuses'
 import {SpleeterOptions} from "../Models/Stems";
 import HttpService from "../Services/http.service"
+import './Upload.css'
 
 export interface UploadState {
     status: Statuses;
@@ -27,8 +28,7 @@ export class Upload extends React.Component<UploadProps, UploadState> {
             sessionname: '',
             options: {
                 stems: 2,
-                isolate: new Set(),
-                remove: new Set()
+                tracks: []
             }
         }
     }
@@ -37,36 +37,46 @@ export class Upload extends React.Component<UploadProps, UploadState> {
             this.startUpload()
     }
     startUpload = () => {
-        if (this.state.file && (this.state.options.isolate.size || this.state.options.remove.size)) {
+        if (this.state.file && this.state.options.tracks.length) {
                 this.setState({
                     ...this.state,
                     status: Statuses.UPLOADING
                 })
-                const form = new FormData()
-                form.append('file', this.state.file)
-                form.append('stems', String(this.state.options.stems))
-                form.append('isolate', JSON.stringify(Array.from(this.state.options.isolate)))
-                form.append('remove', JSON.stringify(Array.from(this.state.options.remove)))
-                HttpService.post('upload', form)
+                const reqBody = JSON.stringify({
+                    'filename': this.state.file.name,
+                    'contentType': this.state.file.type,
+                    'stems': this.state.options.stems,
+                    'tracks': this.state.options.tracks
+                })
+                HttpService.post(`generatepresignedurl`, reqBody)
                     .then((res) => {
-                        if (res) {
+                        if (res && res.message && res.name && this.state.file) {
                             this.setState({
                                 ...this.state,
-                                status: Statuses.UPLOADED,
-                                sessionname: res.name
+                                sessionname: res.name,
+                                file: this.state.file
                             })
-                            this.startStatusCheck(res.name)
+                            return fetch(res.message, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': this.state.file && this.state.file.type || '',
+                                },
+                                body: this.state.file
+                            })
                         }
+                    })
+                    .then((body) => {
+                        // this.startStatusCheck(this.state.sessionname)
+                })
+                    .catch((err) => {
+                        console.log('upload err', err)
                     })
             }
     }
     async getStatus (name: string): Promise<Statuses | null> {
-        const headers: HeadersInit = {
-            'Content-Type': 'application/json'
-        }
-        const response = await HttpService.post('checkstatus', JSON.stringify({name}), headers)
-        if (response && response.status) {
-            return response.status
+        const response = await HttpService.get(`checkstatus?name=${name}`)
+        if (response && response.message) {
+            return response.message
         }
         return null;
     }
@@ -111,7 +121,7 @@ export class Upload extends React.Component<UploadProps, UploadState> {
             <div className="uploadContainer">
                 <Options sendState={this.onOptionsChange}/>
                 <FileInput onFileAdded={this.onFileAdded}/>
-                <button onClick={this.startUpload}>Start</button>
+                <button className="startButton" onClick={this.startUpload}>Start</button>
                 <div className="statusDisplay">
                     {this.state.status !== Statuses.UNINITIALIZED ? `Status: ${this.state.status}` : ''}
                 </div>

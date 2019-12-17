@@ -1,0 +1,27 @@
+.trackContainer {
+    border: 1px solid antiquewhite;
+    border-radius: 2px;
+    margin: 5px;
+    font-size: 20px;
+}
+.trackTitle {
+    display: inline-block;
+    float: left;
+    margin: 5px;
+}
+.removeButton {
+    border-radius: 50%;
+    font-weight: bolder;
+    padding-top: 5px;
+    margin-top: 4px;
+    display: inline-block;
+    float: right;
+}
+.clearBoth {
+    clear: both;
+}
+.checkAndLabel {
+    font-size: 16px;
+    margin: 0px 10px;
+}
+

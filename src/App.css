@@ -19,3 +19,19 @@
 .App-link {
   color: #09d3ac;
 }
+button {
+  background: transparent;
+  color: white;
+  outline: none;
+  border: 3px solid white;
+  cursor: pointer;
+  transition: all 0.07s;
+}
+button:hover {
+  background-color: white;
+  color: #282c34;
+  transition: all 0.07s;
+}
+button:focus {
+  outline: none
+}
