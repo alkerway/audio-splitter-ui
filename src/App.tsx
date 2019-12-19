@@ -11,7 +11,7 @@ class App extends Component<{}, AppState> {
         <div className="App">
           <header className="App-header">
             <p>
-              Upload Files
+              Upload File
             </p>
             <Upload />
           </header>
